@@ -1,6 +1,6 @@
 #!/bin/bash
 
-## Print the numbers fromm 1 to 10 in radom order to the CLI.
+## Print the numbers fromm 1 to 10 in random order to the CLI.
 # seq - print a sequence of numbers
 # shuf - generate random permutations
 # please see man page for more information
