@@ -109,7 +109,7 @@ git clone git@github.com:mervesoysal/adjust-task.git
 Run command for a link:
 
 ```
-ln -s <path>/print-numbers/print_numbers.sh /usr/local/bin/print-numbers
+ln -s <path>/adjust-task/print-numbers/print_numbers.sh /usr/local/bin/print-numbers
 ```
 
 Run following command for print number:
@@ -121,7 +121,7 @@ print-numbers
 or
 
 ```
-<path>/print-number/print_number.sh
+<path>/adjust-task/print-number/print_number.sh
 ```
 
 Run -h parameter to see help:
@@ -133,5 +133,5 @@ print-number -h
 or
 
 ```
-<path>/print-number/print_number.sh -h 
+<path>/adjust-task/print-number/print_number.sh -h 
 ```
