@@ -1,0 +1,212 @@
+Monitoring a server with followings specs:
+
+- 4 times Intel(R) Xeon(R) CPU E7-4830 v4 @ 2.00GHz
+- 64GB of ram
+- 2 TB HDD disk space
+- 2 x 10Gbit/s NICs
+
+The server is used for SSL offloading and proxies around 25000 requests per second.
+
+The most know metrics should be use for monitoring and linux command for them:
+1. Load average
+
+   ```
+   # top
+   top - 09:42:09 up 17:41,  5 users,  load average: 0.00, 0.01, 0.05
+   ```
+   or
+   ```
+   # uptime
+    09:43:44 up 17:42,  6 users,  load average: 0.00, 0.01, 0.05
+   ```
+
+2. CPU utilization
+   Overall CPU usage
+   CPU usage by cores
+   Interrupts and context switches
+   CPU idle time, nice time, wait time, steal time, system time, hardware & software interrupts time, user space time
+
+   ```
+   # mpstat
+   Linux 3.10.0-1160.21.1.el7.x86_64 (tools)       04/01/2021      _x86_64_        (2 CPU)
+
+   09:48:21 AM  CPU    %usr   %nice    %sys %iowait    %irq   %soft  %steal  %guest  %gnice   %idle
+   09:48:21 AM  all    0.06    0.00    0.11    0.04    0.00    0.04    0.00    0.00    0.00   99.74
+   ```
+   or
+
+   ```
+   # top
+   top - 09:50:13 up 17:49,  6 users,  load average: 0.01, 0.02, 0.05
+   Tasks: 117 total,   1 running, 116 sleeping,   0 stopped,   0 zombie
+   %Cpu(s):  0.0 us,  0.0 sy,  0.0 ni, 99.8 id,  0.0 wa,  0.0 hi,  0.2 si,  0.0 st
+   KiB Mem :  1881916 total,   230820 free,   620076 used,  1031020 buff/cache
+   KiB Swap:  2097148 total,  2097148 free,        0 used.  1092152 avail Mem
+   ```
+
+3. Memory utilization
+   Overall memory usage
+   Swap memory utilization
+   Used memory utilization
+   Memory pages (In/Out/Fault),
+   Installed memory
+   Free physical memory
+   Free swap memory
+
+   ```
+   # free -t
+                  total        used        free      shared  buff/cache   available
+   Mem:        1881916      619984      230836        8952     1031096     1092212
+   Swap:       2097148           0     2097148
+   Total:      3979064      619984     2327984
+   ```
+   or
+   ```
+   # cat /proc/meminfo
+   MemTotal:        1881916 kB
+   MemFree:          231300 kB
+   MemAvailable:    1092692 kB
+   Buffers:            2104 kB
+   Cached:           969784 kB
+   SwapCached:            0 kB
+   Active:           890416 kB
+   Inactive:         536724 kB
+   Active(anon):     428604 kB
+   Inactive(anon):    35596 kB
+   Active(file):     461812 kB
+   Inactive(file):   501128 kB
+   Unevictable:           0 kB
+   Mlocked:               0 kB
+   SwapTotal:       2097148 kB
+   SwapFree:        2097148 kB
+   Dirty:                 8 kB
+   Writeback:             0 kB
+   AnonPages:        455460 kB
+   Mapped:            43020 kB
+   Shmem:              8948 kB
+   Slab:             103120 kB
+   SReclaimable:      59232 kB
+   SUnreclaim:        43888 kB
+   KernelStack:        2672 kB
+   PageTables:         7448 kB
+   NFS_Unstable:          0 kB
+   Bounce:                0 kB
+   WritebackTmp:          0 kB
+   CommitLimit:     3038104 kB
+   Committed_AS:     654220 kB
+   VmallocTotal:   34359738367 kB
+   VmallocUsed:       30164 kB
+   VmallocChunk:   34359704576 kB
+   Percpu:              520 kB
+   HardwareCorrupted:     0 kB
+   AnonHugePages:    350208 kB
+   CmaTotal:              0 kB
+   CmaFree:               0 kB
+   HugePages_Total:       0
+   HugePages_Free:        0
+   HugePages_Rsvd:        0
+   HugePages_Surp:        0
+   Hugepagesize:       2048 kB
+   DirectMap4k:       77760 kB
+   DirectMap2M:     2019328 kB
+   ```
+
+4. Disk idle and busy percentage
+
+   ```
+   dstat -d
+   -dsk/total-
+   read  writ
+   10k   14k
+   ```
+5. Disk usage
+
+   ```
+   # df -h
+   Filesystem                   Size  Used Avail Use% Mounted on
+   devtmpfs                     908M     0  908M   0% /dev
+   tmpfs                        919M     0  919M   0% /dev/shm
+   tmpfs                        919M  8.6M  911M   1% /run
+   tmpfs                        919M     0  919M   0% /sys/fs/cgroup
+   /dev/mapper/rhel_tools-root   17G  2.5G   15G  15% /
+   /dev/sda1                   1014M  194M  821M  20% /boot
+   tmpfs                        184M     0  184M   0% /run/user/0
+   ```
+
+6. Resource Checks
+   Monitor files, directories, syslogs, URLs and ports
+
+7. System statistics including login count, total services and processes running
+    login count:
+
+    ```
+    # w -h | wc -l
+    2
+    ```
+
+    total services:
+
+    ```
+    # service --status-all
+    ```
+
+    processes running:
+
+    ```
+    #  ps -aux | less
+    ```
+
+8. Disks
+   Disk partition details:
+   ```
+   # lsblk
+   NAME                MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+   sda                   8:0    0   20G  0 disk
+   ├─sda1                8:1    0    1G  0 part /boot
+   └─sda2                8:2    0   19G  0 part
+     ├─rhel_tools-root 253:0    0   17G  0 lvm  /
+     └─rhel_tools-swap 253:1    0    2G  0 lvm  [SWAP]
+   sr0                  11:0    1 58.3M  0 rom
+   ```
+
+   I/O:
+   ```
+   # sar
+   Linux 3.10.0-1160.21.1.el7.x86_64 (tools)       04/01/2021      _x86_64_       (                                                                                                                                                             2 CPU)
+
+   09:50:01 AM     CPU     %user     %nice   %system   %iowait    %steal     %idle
+   10:00:01 AM     all      0.16      0.00      0.11      0.02      0.00     99.71
+  ```
+
+9. Network stats
+   Data sent and received:
+   ```
+   # cat /sys/class/net/enp0s3/statistics/rx_packets
+   # cat /sys/class/net/enp0s3/statistics/tx_packets
+   ```
+   Input and output traffic
+   Bandwidth
+   Packets sent and received
+   Error packets:
+
+   ```
+   # nload
+   ```
+
+10. Recent events
+    Commands:
+    ```
+    fc -l
+    ```
+    or
+    ```
+    history
+    ```
+    Logs:
+    /var/log/messages
+    /var/log/secure
+    /var/log/dmesg
+    application logs
+
+To be able to monitor Linux servers there tools but always an option that writing script for metrics.
+For this kind for metrics I would use zabbix for monitoring, it is easy to install and free.
